@@ -12,6 +12,26 @@ function parseDateKey(key: string): Date {
   return new Date(year, month - 1, day);
 }
 
+export function addDays(key: string, days: number): string {
+  const date = parseDateKey(key);
+  date.setDate(date.getDate() + days);
+  return toDateKey(date);
+}
+
+const dayAndMonth = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
+
+const dayMonthAndYear = new Intl.DateTimeFormat(undefined, {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+});
+
+/** A short date, with the year only when it isn't the same as the reference day's. */
+export function formatShortDate(key: string, referenceKey: string): string {
+  const format = key.slice(0, 4) === referenceKey.slice(0, 4) ? dayAndMonth : dayMonthAndYear;
+  return format.format(parseDateKey(key));
+}
+
 const longDate = new Intl.DateTimeFormat(undefined, {
   weekday: 'long',
   month: 'long',

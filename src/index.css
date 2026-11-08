@@ -11,10 +11,15 @@
   --color-line: #e8e2d8;
   --color-accent: #b4532a;
   --color-accent-soft: #f6e7df;
+  --color-priority-high: #b3362b;
+  --color-priority-medium: #94690f;
+  --color-priority-low: #4f7160;
 
   --animate-view-in: view-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-item-in: item-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-item-out: item-out 180ms ease-in forwards;
+  /* Waits so the checkmark is seen before the task moves. */
+  --animate-item-done: item-out 200ms ease-in 220ms forwards;
 
   @keyframes view-in {
     from {
