@@ -1,14 +1,17 @@
-import { Feather, Plus } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Feather } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { EmptyState } from '../../components/EmptyState';
+import { JournalBrowser } from './JournalBrowser';
 import { JournalEditor } from './JournalEditor';
-import { JournalList } from './JournalList';
-import type { Journal } from './useJournal';
+import { JournalReader } from './JournalReader';
+import { isBlank, type Journal } from './useJournal';
 
 export function JournalView({ journal }: { journal: Journal }) {
-  const { entries, createEntry, updateEntry, deleteEntry, discardIfBlank } = journal;
+  const { entries, allTags, saveFailed, createEntry, updateEntry, deleteEntry, discardIfBlank } = journal;
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
   const selected = entries.find((entry) => entry.id === selectedId) ?? null;
+  const tagSuggestions = useMemo(() => allTags.map((item) => item.tag), [allTags]);
 
   useEffect(() => {
     return () => {
@@ -16,44 +19,65 @@ export function JournalView({ journal }: { journal: Journal }) {
     };
   }, [selectedId, discardIfBlank]);
 
+  function startNew() {
+    setSelectedId(createEntry());
+    setIsEditing(true);
+  }
+
+  function select(id: string) {
+    if (id === selectedId) return;
+    setSelectedId(id);
+    setIsEditing(false);
+  }
+
+  function close() {
+    setSelectedId(null);
+    setIsEditing(false);
+  }
+
   return (
-    <div className="grid h-full grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-[18rem_minmax(0,1fr)] md:gap-6">
-      {/* On phones the list and the editor take turns filling the screen. */}
-      <section className={`min-h-0 flex-col ${selected ? 'hidden md:flex' : 'flex'}`}>
-        <div className="flex items-center justify-between pb-3">
-          <h1 className="font-serif text-2xl tracking-tight">Journal</h1>
-          <button
-            type="button"
-            onClick={() => setSelectedId(createEntry())}
-            className="bg-ink text-paper flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium transition-transform duration-150 hover:-translate-y-px active:translate-y-0"
-          >
-            <Plus className="size-4" aria-hidden />
-            New entry
-          </button>
-        </div>
-        {entries.length === 0 ? (
-          <EmptyState Icon={Feather} title="Nothing here yet" hint="Start with one line about today." />
-        ) : (
-          <JournalList entries={entries} selectedId={selectedId} onSelect={setSelectedId} />
-        )}
+    <div className="grid h-full grid-cols-[minmax(0,1fr)] grid-rows-[minmax(0,1fr)] gap-4 md:grid-cols-[20rem_minmax(0,1fr)] md:gap-6">
+      {/* On phones the list and the entry take turns filling the screen. */}
+      <section className={`-mx-1 min-h-0 flex-col overflow-y-auto px-1 pb-1 ${selected ? 'hidden md:flex' : 'flex'}`}>
+        <JournalBrowser
+          entries={entries}
+          tags={allTags}
+          selectedId={selectedId}
+          onSelect={select}
+          onNew={startNew}
+        />
       </section>
 
       <section className={`min-h-0 ${selected ? 'block' : 'hidden md:block'}`}>
-        {selected ? (
-          <JournalEditor
-            key={selected.id}
-            entry={selected}
-            onChange={(changes) => updateEntry(selected.id, changes)}
-            onDelete={() => {
-              deleteEntry(selected.id);
-              setSelectedId(null);
-            }}
-            onBack={() => setSelectedId(null)}
-          />
-        ) : (
+        {!selected ? (
           <div className="border-line grid h-full place-items-center rounded-2xl border border-dashed">
             <EmptyState Icon={Feather} title="Pick a page" hint="Choose an entry, or start a new one." />
           </div>
+        ) : isEditing ? (
+          <JournalEditor
+            key={`edit-${selected.id}`}
+            entry={selected}
+            tagSuggestions={tagSuggestions}
+            saveFailed={saveFailed}
+            onChange={(changes) => updateEntry(selected.id, changes)}
+            onDone={() => (isBlank(selected) ? close() : setIsEditing(false))}
+            onDelete={() => {
+              deleteEntry(selected.id);
+              close();
+            }}
+            onBack={close}
+          />
+        ) : (
+          <JournalReader
+            key={`read-${selected.id}`}
+            entry={selected}
+            onEdit={() => setIsEditing(true)}
+            onDelete={() => {
+              deleteEntry(selected.id);
+              close();
+            }}
+            onBack={close}
+          />
         )}
       </section>
     </div>
