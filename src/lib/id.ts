@@ -1,0 +1,4 @@
+/** Not crypto.randomUUID, which is unavailable on plain-http LAN addresses such as phone testing. */
+export function createId(): string {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
