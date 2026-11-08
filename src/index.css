@@ -19,7 +19,8 @@
   @keyframes view-in {
     from {
       opacity: 0;
-      transform: translateY(8px);
+      /* Upward, because a downward offset briefly makes full-height views scrollable. */
+      transform: translateY(-8px);
     }
     to {
       opacity: 1;
@@ -66,6 +67,29 @@
   /* Writing surfaces show the caret instead of a focus ring. */
   .writing-field:focus-visible {
     outline: none;
+  }
+}
+
+@layer components {
+  /* A hidden copy of the text sizes the grid cell, so the textarea grows without script. */
+  .autogrow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .autogrow::after {
+    content: attr(data-value) ' ';
+    grid-area: 1 / 1;
+    visibility: hidden;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .autogrow > textarea {
+    grid-area: 1 / 1;
+    overflow: hidden;
+    resize: none;
+    overflow-wrap: anywhere;
   }
 }
 

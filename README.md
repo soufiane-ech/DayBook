@@ -23,7 +23,7 @@ npm run dev
 src/
   components/   Shared UI (header, navigation, empty state)
   features/
-    journal/    Journal state, list, and editor
+    journal/    Entries, moods, tags, search and filters, reader, and editor
     todos/      Todo state, form, filters, and list
   hooks/        Reusable hooks (hash routing, localStorage)
   lib/          Small helpers (dates, ids)

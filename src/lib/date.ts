@@ -1,19 +1,46 @@
+/** Calendar days are stored as local 'YYYY-MM-DD' keys, which also sort chronologically. */
+export function toDateKey(date: Date): string {
+  const year = String(date.getFullYear()).padStart(4, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/** Not new Date(key), which reads the key as UTC and can land on the previous day. */
+function parseDateKey(key: string): Date {
+  const [year, month, day] = key.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
 const longDate = new Intl.DateTimeFormat(undefined, {
   weekday: 'long',
   month: 'long',
   day: 'numeric',
 });
 
-const shortDate = new Intl.DateTimeFormat(undefined, {
-  month: 'short',
+const fullDate = new Intl.DateTimeFormat(undefined, {
+  weekday: 'long',
+  month: 'long',
   day: 'numeric',
   year: 'numeric',
 });
 
-export function formatLongDate(value: string | Date): string {
-  return longDate.format(new Date(value));
+const monthAndYear = new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' });
+
+const shortWeekday = new Intl.DateTimeFormat(undefined, { weekday: 'short' });
+
+export function formatLongDate(value: Date): string {
+  return longDate.format(value);
 }
 
-export function formatShortDate(value: string | Date): string {
-  return shortDate.format(new Date(value));
+export function formatFullDate(key: string): string {
+  return fullDate.format(parseDateKey(key));
+}
+
+export function formatMonthAndYear(key: string): string {
+  return monthAndYear.format(parseDateKey(key));
+}
+
+export function formatShortWeekday(key: string): string {
+  return shortWeekday.format(parseDateKey(key));
 }
