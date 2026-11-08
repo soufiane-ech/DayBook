@@ -15,7 +15,7 @@ interface TodoFiltersProps {
   onChange: (filter: TodoFilter) => void;
 }
 
-/** A wrapping row of pills on phones and a vertical menu beside the list on larger screens. */
+/** A wrapping row of chips on phones and a vertical menu beside the list on larger screens. */
 export function TodoFilters({ value, counts, onChange }: TodoFiltersProps) {
   return (
     <div role="group" aria-label="Filter tasks" className="flex flex-wrap gap-1.5 md:flex-col md:gap-0.5">
@@ -27,7 +27,7 @@ export function TodoFilters({ value, counts, onChange }: TodoFiltersProps) {
             type="button"
             onClick={() => onChange(option)}
             aria-pressed={isActive}
-            className={`flex items-center gap-2 rounded-full px-3 py-1 text-sm transition-colors duration-200 md:rounded-xl md:px-2.5 md:py-2 ${
+            className={`flex items-center gap-2 rounded-lg px-2.5 py-1 text-sm transition-colors duration-150 md:py-2 ${
               isActive ? 'bg-accent-soft text-accent font-medium' : 'text-ink-soft hover:bg-line/50 hover:text-ink'
             }`}
           >

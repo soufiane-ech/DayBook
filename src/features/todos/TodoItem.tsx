@@ -46,18 +46,16 @@ export function TodoItem({ todo, today, restoreFocus, onToggle, onSave, onDelete
 
   const entrance = exit ? (exit.isToggle ? 'animate-item-done' : 'animate-item-out') : 'animate-item-in';
   const surface = todo.done
-    ? 'bg-line/30 border-transparent'
-    : 'border-line bg-card shadow-sm hover:shadow-md';
+    ? 'bg-sunken border-transparent'
+    : editing
+      ? 'border-accent/50 bg-card shadow-lifted'
+      : 'border-line bg-card hover:border-ink-soft/40 hover:shadow-soft';
 
   return (
     <li
       onAnimationEnd={handleAnimationEnd}
-      className={`${entrance} ${surface} group relative flex items-start gap-3 overflow-hidden rounded-xl border py-3 pr-2.5 pl-4 transition-shadow duration-200`}
+      className={`${entrance} ${surface} group flex items-start gap-3 rounded-xl border py-3 pr-2.5 pl-3.5 transition duration-200`}
     >
-      {!todo.done && !editing && priority && (
-        <span aria-hidden className={`${priority.bar} absolute inset-y-0 left-0 w-1`} />
-      )}
-
       {editing ? (
         <TodoEditor
           todo={todo}
@@ -78,11 +76,15 @@ export function TodoItem({ todo, today, restoreFocus, onToggle, onSave, onDelete
               aria-label={`Mark "${todo.title}" as ${todo.done ? 'not done' : 'done'}`}
               className="peer sr-only"
             />
-            <span className="border-ink-soft/40 hover:border-accent peer-checked:border-accent peer-checked:bg-accent peer-focus-visible:outline-accent size-5 rounded-full border-[1.5px] transition-colors duration-200 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2" />
+            <span
+              className={`${priority?.ring ?? 'border-ink-soft/40'} peer-checked:border-accent peer-checked:bg-accent peer-focus-visible:outline-accent size-5 rounded-full border-[1.5px] transition-colors duration-200 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 ${
+                todo.done ? '' : 'hover:bg-accent-soft'
+              }`}
+            />
             <Check
               aria-hidden
               strokeWidth={3}
-              className={`text-paper absolute size-3 transition-transform duration-200 ease-out ${
+              className={`text-on-accent absolute size-3 transition-transform duration-200 ease-out ${
                 looksChecked ? 'scale-100' : 'scale-0'
               }`}
             />
@@ -116,7 +118,7 @@ export function TodoItem({ todo, today, restoreFocus, onToggle, onSave, onDelete
               {due && (
                 <span
                   className={`flex items-center gap-1 ${
-                    due.isOverdue ? 'bg-accent-soft text-accent -mx-1.5 rounded-full px-1.5 py-0.5 font-medium' : 'text-ink-soft'
+                    due.isOverdue ? 'bg-accent-soft text-accent -mx-1.5 rounded-md px-1.5 py-0.5 font-medium' : 'text-ink-soft'
                   }`}
                 >
                   <CalendarDays className="size-3.5" aria-hidden />
@@ -138,7 +140,7 @@ export function TodoItem({ todo, today, restoreFocus, onToggle, onSave, onDelete
               type="button"
               onClick={() => setEditing(true)}
               aria-label={`Edit "${todo.title}"`}
-              className="text-ink-soft hover:text-ink rounded-md p-1 transition-colors"
+              className="icon-btn p-1"
             >
               <Pencil className="size-4" aria-hidden />
             </button>
@@ -146,7 +148,7 @@ export function TodoItem({ todo, today, restoreFocus, onToggle, onSave, onDelete
               type="button"
               onClick={() => setExit({ run: onDelete, isToggle: false })}
               aria-label={`Delete "${todo.title}"`}
-              className="text-ink-soft hover:text-accent rounded-md p-1 transition-colors"
+              className="icon-btn hover:text-accent p-1"
             >
               <X className="size-4" aria-hidden />
             </button>

@@ -1,6 +1,6 @@
 import { Pencil } from 'lucide-react';
 import { formatFullDate } from '../../lib/date';
-import { EntryPanel, PRIMARY_ACTION_CLASS } from './EntryPanel';
+import { EntryPanel } from './EntryPanel';
 import { findMood } from './moods';
 import type { JournalEntry } from './useJournal';
 
@@ -19,7 +19,7 @@ export function JournalReader({ entry, onEdit, onDelete, onBack }: JournalReader
       onBack={onBack}
       onDelete={onDelete}
       action={
-        <button type="button" onClick={onEdit} className={PRIMARY_ACTION_CLASS}>
+        <button type="button" onClick={onEdit} className="btn btn-primary">
           <Pencil className="size-3.5" aria-hidden />
           Edit
         </button>
@@ -28,12 +28,12 @@ export function JournalReader({ entry, onEdit, onDelete, onBack }: JournalReader
       <time dateTime={entry.date} className="text-ink-soft text-sm">
         {formatFullDate(entry.date)}
       </time>
-      <h2 className="mt-2 font-serif text-2xl tracking-tight wrap-break-word md:text-3xl">
+      <h2 className="mt-2 font-serif text-3xl tracking-tight wrap-break-word md:text-4xl">
         {entry.title.trim() || 'Untitled'}
       </h2>
 
       {mood && (
-        <p className="bg-accent-soft text-accent mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium">
+        <p className="bg-accent-soft text-accent mt-4 inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-sm font-medium">
           <span aria-hidden className="text-base leading-none">
             {mood.emoji}
           </span>
@@ -42,17 +42,17 @@ export function JournalReader({ entry, onEdit, onDelete, onBack }: JournalReader
       )}
 
       {entry.body.trim() ? (
-        <p className="mt-5 font-serif text-[1.0625rem] leading-8 wrap-anywhere whitespace-pre-wrap">
+        <p className="mt-6 font-serif text-[1.0625rem] leading-[1.85] wrap-anywhere whitespace-pre-wrap">
           {entry.body}
         </p>
       ) : (
-        <p className="text-ink-soft mt-5 italic">Nothing written for this day.</p>
+        <p className="text-ink-soft mt-6 italic">Nothing written for this day.</p>
       )}
 
       {entry.tags.length > 0 && (
-        <ul className="border-line mt-6 flex flex-wrap gap-1.5 border-t pt-4">
+        <ul className="border-line mt-8 flex flex-wrap gap-1.5 border-t pt-5">
           {entry.tags.map((tag) => (
-            <li key={tag} className="bg-line/60 text-ink-soft rounded-full px-2.5 py-0.5 text-sm wrap-anywhere">
+            <li key={tag} className="bg-line/60 text-ink-soft rounded-md px-2 py-0.5 text-sm wrap-anywhere">
               #{tag}
             </li>
           ))}

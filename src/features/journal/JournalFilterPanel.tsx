@@ -10,9 +10,7 @@ interface JournalFilterPanelProps {
   onChange: (changes: Partial<JournalFilters>) => void;
 }
 
-const LABEL_CLASS = 'text-ink-soft mb-1 block text-xs font-medium';
-const DATE_INPUT_CLASS =
-  'border-line bg-card focus:border-accent/60 w-full min-w-0 rounded-lg border px-2 py-1.5 text-sm transition-colors';
+const DATE_INPUT_CLASS = 'field w-full min-w-0 text-sm';
 
 function toggled<T>(list: T[], item: T): T[] {
   return list.includes(item) ? list.filter((other) => other !== item) : [...list, item];
@@ -31,10 +29,10 @@ export function JournalFilterPanel({ open, filters, tags, onChange }: JournalFil
       }`}
     >
       <div inert={!open} className="min-h-0 overflow-hidden">
-        <div className="space-y-3 p-0.5 pt-2.5 pb-1">
+        <div className="space-y-3 p-0.5 pt-3 pb-1">
           <div className="grid grid-cols-2 gap-2">
             <label>
-              <span className={LABEL_CLASS}>From</span>
+              <span className="section-label">From</span>
               <input
                 type="date"
                 value={filters.from}
@@ -43,7 +41,7 @@ export function JournalFilterPanel({ open, filters, tags, onChange }: JournalFil
               />
             </label>
             <label>
-              <span className={LABEL_CLASS}>To</span>
+              <span className="section-label">To</span>
               <input
                 type="date"
                 value={filters.to}
@@ -54,7 +52,7 @@ export function JournalFilterPanel({ open, filters, tags, onChange }: JournalFil
           </div>
 
           <div role="group" aria-label="Filter by mood">
-            <span className={LABEL_CLASS}>Mood</span>
+            <span className="section-label">Mood</span>
             <MoodPicker
               compact
               selected={filters.moods}
@@ -63,7 +61,7 @@ export function JournalFilterPanel({ open, filters, tags, onChange }: JournalFil
           </div>
 
           <div role="group" aria-label="Filter by tag">
-            <span className={LABEL_CLASS}>Tags</span>
+            <span className="section-label">Tags</span>
             {options.length === 0 ? (
               <p className="text-ink-soft text-sm">Tags you add to entries will appear here.</p>
             ) : (
@@ -76,9 +74,7 @@ export function JournalFilterPanel({ open, filters, tags, onChange }: JournalFil
                       type="button"
                       onClick={() => onChange({ tags: toggled(filters.tags, tag) })}
                       aria-pressed={isActive}
-                      className={`max-w-full truncate rounded-full px-2.5 py-0.5 text-sm transition-colors duration-200 ${
-                        isActive ? 'bg-accent-soft text-accent font-medium' : 'bg-line/60 text-ink-soft hover:text-ink'
-                      }`}
+                      className={`chip max-w-full truncate py-0.5 ${isActive ? 'chip-on' : ''}`}
                     >
                       #{tag} <span className="opacity-60">{count}</span>
                     </button>

@@ -7,14 +7,6 @@ interface TodoFieldsProps {
   onChange: (changes: Partial<TodoDraft>) => void;
 }
 
-const LABEL_CLASS = 'text-ink-soft mb-1.5 block text-xs font-medium';
-
-function optionClass(isSelected: boolean): string {
-  return `rounded-full px-2.5 py-1 text-sm transition-colors duration-200 ${
-    isSelected ? 'bg-accent-soft text-accent font-medium' : 'bg-line/60 text-ink-soft hover:text-ink'
-  }`;
-}
-
 /** The fields shared by adding and editing a task, everything but the title. */
 export function TodoFields({ draft, onChange }: TodoFieldsProps) {
   const today = toDateKey(new Date());
@@ -37,14 +29,14 @@ export function TodoFields({ draft, onChange }: TodoFieldsProps) {
 
       <div className="border-line flex flex-wrap gap-x-6 gap-y-3 border-t pt-3">
         <div className="min-w-0">
-          <span className={LABEL_CLASS}>Due date</span>
+          <span className="section-label">Due date</span>
           <div className="flex flex-wrap items-center gap-1.5">
             <input
               type="date"
               value={draft.dueDate ?? ''}
               onChange={(event) => onChange({ dueDate: event.target.value || null })}
               aria-label="Due date"
-              className="border-line text-ink-soft hover:border-ink-soft/40 min-w-0 rounded-lg border bg-transparent px-2 py-1 text-sm transition-colors"
+              className="field text-ink-soft min-w-0 py-1 text-sm"
             />
             {shortcuts.map(({ label, date }) => {
               const isSelected = draft.dueDate === date;
@@ -54,7 +46,7 @@ export function TodoFields({ draft, onChange }: TodoFieldsProps) {
                   type="button"
                   onClick={() => onChange({ dueDate: isSelected ? null : date })}
                   aria-pressed={isSelected}
-                  className={optionClass(isSelected)}
+                  className={`chip ${isSelected ? 'chip-on' : ''}`}
                 >
                   {label}
                 </button>
@@ -64,7 +56,7 @@ export function TodoFields({ draft, onChange }: TodoFieldsProps) {
         </div>
 
         <div role="group" aria-label="Priority">
-          <span className={LABEL_CLASS}>Priority</span>
+          <span className="section-label">Priority</span>
           <div className="flex gap-1.5">
             {PRIORITIES.map((priority) => {
               const isSelected = draft.priority === priority.id;
@@ -74,7 +66,7 @@ export function TodoFields({ draft, onChange }: TodoFieldsProps) {
                   type="button"
                   onClick={() => onChange({ priority: priority.id })}
                   aria-pressed={isSelected}
-                  className={optionClass(isSelected)}
+                  className={`chip ${isSelected ? 'chip-on' : ''}`}
                 >
                   {priority.label}
                 </button>
@@ -86,9 +78,3 @@ export function TodoFields({ draft, onChange }: TodoFieldsProps) {
     </div>
   );
 }
-
-export const SAVE_BUTTON_CLASS =
-  'bg-ink text-paper rounded-full px-3.5 py-1.5 text-sm font-medium transition duration-150 hover:-translate-y-px active:translate-y-0 disabled:translate-y-0 disabled:cursor-default disabled:opacity-30';
-
-export const CANCEL_BUTTON_CLASS =
-  'text-ink-soft hover:text-ink rounded-full px-3 py-1.5 text-sm transition-colors duration-200';

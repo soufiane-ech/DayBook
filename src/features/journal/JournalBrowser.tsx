@@ -14,7 +14,7 @@ interface JournalBrowserProps {
   onNew: () => void;
 }
 
-/** The left column: new entry, search, filters, and the list of past entries. */
+/** The list pane: new entry, search, filters, and past entries. */
 export function JournalBrowser({ entries, tags, selectedId, onSelect, onNew }: JournalBrowserProps) {
   const [filters, setFilters] = useState<JournalFilters>(NO_FILTERS);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -32,25 +32,23 @@ export function JournalBrowser({ entries, tags, selectedId, onSelect, onNew }: J
     setFilters((current) => ({ ...current, ...changes }));
   }
 
+  function startNew() {
+    // Otherwise the new entry could disappear from the list once it's closed.
+    setFilters(NO_FILTERS);
+    onNew();
+  }
+
   return (
     <>
-      <div className="flex items-center justify-between pb-3">
+      <div className="flex items-center justify-between pt-4 pb-3">
         <h1 className="font-serif text-2xl tracking-tight">Journal</h1>
-        <button
-          type="button"
-          onClick={() => {
-            // Otherwise the new entry could disappear from the list once it's closed.
-            setFilters(NO_FILTERS);
-            onNew();
-          }}
-          className="bg-ink text-paper flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium transition-transform duration-150 hover:-translate-y-px active:translate-y-0"
-        >
+        <button type="button" onClick={startNew} className="btn btn-primary">
           <Plus className="size-4" aria-hidden />
           New entry
         </button>
       </div>
 
-      <div className="bg-paper sticky top-0 z-10 flex gap-2 py-0.5">
+      <div className="bg-sunken sticky top-0 z-10 flex gap-2 py-0.5">
         <div className="relative min-w-0 flex-1">
           <Search className="text-ink-soft pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" aria-hidden />
           <input
@@ -58,7 +56,7 @@ export function JournalBrowser({ entries, tags, selectedId, onSelect, onNew }: J
             onChange={(event) => changeFilters({ query: event.target.value })}
             placeholder="Search entries"
             aria-label="Search entries"
-            className="writing-field border-line bg-card focus:border-accent/60 placeholder:text-ink-soft/70 w-full rounded-xl border py-1.5 pr-8 pl-9 text-base transition-colors duration-200 sm:text-sm"
+            className="field placeholder:text-ink-soft/70 w-full pr-8 pl-9 text-base sm:text-sm"
           />
           {filters.query && (
             <button
@@ -76,10 +74,10 @@ export function JournalBrowser({ entries, tags, selectedId, onSelect, onNew }: J
           onClick={() => setFiltersOpen((open) => !open)}
           aria-expanded={filtersOpen}
           aria-controls="journal-filters"
-          className={`flex shrink-0 items-center gap-1.5 rounded-xl border px-3 py-1.5 text-sm transition-colors duration-200 ${
+          className={`btn border ${
             filtersOpen || panelFilterCount > 0
-              ? 'border-accent/40 bg-accent-soft text-accent font-medium'
-              : 'border-line bg-card text-ink-soft hover:text-ink'
+              ? 'border-accent/40 bg-accent-soft text-accent'
+              : 'border-line bg-card text-ink-soft hover:text-ink font-normal'
           }`}
         >
           <SlidersHorizontal className="size-4" aria-hidden />
@@ -111,7 +109,12 @@ export function JournalBrowser({ entries, tags, selectedId, onSelect, onNew }: J
       ) : isFiltering ? (
         <EmptyState Icon={SearchX} title="No matching entries" hint="Try a different word or fewer filters." />
       ) : (
-        <EmptyState Icon={Feather} title="Nothing here yet" hint="Start with one line about today." />
+        <EmptyState
+          Icon={Feather}
+          title="Nothing here yet"
+          hint="Your thoughts stay private, saved right here in this browser."
+          action={{ label: 'Write your first entry', onClick: startNew }}
+        />
       )}
     </>
   );

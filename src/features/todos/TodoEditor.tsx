@@ -1,5 +1,5 @@
 import { useState, type FormEvent, type KeyboardEvent } from 'react';
-import { CANCEL_BUTTON_CLASS, SAVE_BUTTON_CLASS, TodoFields } from './TodoFields';
+import { TodoFields } from './TodoFields';
 import type { Todo, TodoDraft } from './useTodos';
 
 interface TodoEditorProps {
@@ -39,10 +39,10 @@ export function TodoEditor({ todo, onSave, onCancel }: TodoEditorProps) {
       />
       <TodoFields draft={draft} onChange={(changes) => setDraft({ ...draft, ...changes })} />
       <div className="flex justify-end gap-1">
-        <button type="button" onClick={onCancel} className={CANCEL_BUTTON_CLASS}>
+        <button type="button" onClick={onCancel} className="btn btn-quiet">
           Cancel
         </button>
-        <button type="submit" disabled={!title} className={SAVE_BUTTON_CLASS}>
+        <button type="submit" disabled={!title} className="btn btn-primary">
           Save
         </button>
       </div>

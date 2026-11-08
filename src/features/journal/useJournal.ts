@@ -104,6 +104,14 @@ export function useJournal() {
     [setEntries],
   );
 
+  /** Puts back an entry that was just deleted. */
+  const restoreEntry = useCallback(
+    (entry: JournalEntry) => {
+      setEntries((current) => [...current, entry]);
+    },
+    [setEntries],
+  );
+
   /** Removes an entry that was opened but never written in. */
   const discardIfBlank = useCallback(
     (id: string) => {
@@ -112,7 +120,7 @@ export function useJournal() {
     [setEntries],
   );
 
-  return { entries, allTags, saveFailed, createEntry, updateEntry, deleteEntry, discardIfBlank };
+  return { entries, allTags, saveFailed, createEntry, updateEntry, deleteEntry, restoreEntry, discardIfBlank };
 }
 
 export type Journal = ReturnType<typeof useJournal>;

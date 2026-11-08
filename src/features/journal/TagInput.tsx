@@ -53,18 +53,18 @@ export function TagInput({ tags, suggestions, onChange }: TagInputProps) {
 
   return (
     <div>
-      <div className="border-line focus-within:border-accent/60 flex flex-wrap items-center gap-1.5 rounded-xl border px-2.5 py-2 transition-colors duration-200">
+      <div className="field flex flex-wrap items-center gap-1.5">
         {tags.map((tag) => (
           <span
             key={tag}
-            className="animate-item-in bg-accent-soft text-accent flex max-w-full items-center gap-0.5 rounded-full py-0.5 pr-1 pl-2.5 text-sm"
+            className="animate-item-in bg-accent-soft text-accent flex max-w-full items-center gap-0.5 rounded-md py-0.5 pr-1 pl-2 text-sm"
           >
             <span className="truncate">#{tag}</span>
             <button
               type="button"
               onClick={() => onChange(tags.filter((other) => other !== tag))}
               aria-label={`Remove tag ${tag}`}
-              className="hover:bg-accent/15 rounded-full p-0.5 transition-colors"
+              className="hover:bg-accent/15 rounded p-0.5 transition-colors"
             >
               <X className="size-3.5" aria-hidden />
             </button>
@@ -82,7 +82,7 @@ export function TagInput({ tags, suggestions, onChange }: TagInputProps) {
           placeholder={tags.length === 0 ? 'Add tags, separated by commas' : 'Add another'}
           aria-label="Add tag"
           enterKeyHint="done"
-          className="writing-field placeholder:text-ink-soft/60 min-w-32 flex-1 bg-transparent py-0.5 text-base sm:text-sm"
+          className="writing-field placeholder:text-ink-soft/70 min-w-32 flex-1 bg-transparent py-0.5 text-base sm:text-sm"
         />
       </div>
       {focused && matches.length > 0 && (
@@ -94,7 +94,7 @@ export function TagInput({ tags, suggestions, onChange }: TagInputProps) {
               // Keeps focus in the input so its blur handler doesn't run first.
               onMouseDown={(event) => event.preventDefault()}
               onClick={() => addTags([tag])}
-              className="bg-line/60 text-ink-soft hover:text-ink rounded-full px-2.5 py-0.5 text-sm transition-colors"
+              className="chip"
             >
               #{tag}
             </button>
