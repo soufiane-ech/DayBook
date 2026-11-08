@@ -2,7 +2,7 @@
 
 A clean, minimal journal and todo list that runs in the browser. Everything you write is saved in your browser's localStorage, so there is no account or server.
 
-Built with React, TypeScript, Vite, and Tailwind CSS.
+Built with React, TypeScript, Vite, and Tailwind CSS. Includes light and dark themes and a distraction-free focus mode for writing.
 
 ## Getting started
 
@@ -21,12 +21,12 @@ npm run dev
 
 ```
 src/
-  components/   Shared UI (header, navigation, empty state)
+  components/   Shared UI (navigation, theme toggle, toasts, empty state)
   features/
     journal/    Entries, moods, tags, search and filters, reader, and editor
     todos/      Tasks, priorities, filters and sorting, composer, and list
   hooks/        Reusable hooks (hash routing, localStorage)
-  lib/          Small helpers (dates, ids)
+  lib/          Small helpers (dates, ids, theme)
   App.tsx       App shell and section switching
   index.css     Tailwind import, design tokens, animations
 ```

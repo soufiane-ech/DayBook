@@ -19,7 +19,7 @@ export function EntryDateField({ value, onChange }: EntryDateFieldProps) {
       }}
       onBlur={() => setDraft(value)}
       aria-label="Entry date"
-      className="border-line text-ink-soft hover:border-ink-soft/40 min-w-0 rounded-lg border bg-transparent px-2 py-1 text-sm transition-colors"
+      className="field text-ink-soft min-w-0 py-1 text-sm"
     />
   );
 }

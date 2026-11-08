@@ -1,6 +1,6 @@
 import { Plus } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type RefObject } from 'react';
-import { CANCEL_BUTTON_CLASS, SAVE_BUTTON_CLASS, TodoFields } from './TodoFields';
+import { TodoFields } from './TodoFields';
 import { DEFAULT_PRIORITY } from './priorities';
 import type { TodoDraft } from './useTodos';
 
@@ -66,12 +66,10 @@ export function TodoComposer({ inputRef, presetDueDate, onAdd }: TodoComposerPro
       ref={formRef}
       onSubmit={handleSubmit}
       onKeyDown={handleKeyDown}
-      className={`bg-card rounded-2xl border shadow-sm transition-colors duration-200 ${
-        open ? 'border-accent/40' : 'border-line'
-      }`}
+      className={`panel transition duration-200 ${open ? 'border-accent/50 shadow-lifted' : 'hover:border-ink-soft/40'}`}
     >
       <div className="flex items-center gap-3 px-4 py-3">
-        <Plus className="text-ink-soft size-5 shrink-0" aria-hidden />
+        <Plus className={`size-5 shrink-0 transition-colors duration-200 ${open ? 'text-accent' : 'text-ink-soft'}`} aria-hidden />
         <input
           ref={inputRef}
           value={draft.title}
@@ -93,10 +91,10 @@ export function TodoComposer({ inputRef, presetDueDate, onAdd }: TodoComposerPro
           <div className="px-4 pb-3">
             <TodoFields draft={draft} onChange={change} />
             <div className="mt-3 flex justify-end gap-1">
-              <button type="button" onClick={reset} className={CANCEL_BUTTON_CLASS}>
+              <button type="button" onClick={reset} className="btn btn-quiet">
                 Cancel
               </button>
-              <button type="submit" disabled={!title} className={SAVE_BUTTON_CLASS}>
+              <button type="submit" disabled={!title} className="btn btn-primary">
                 Add task
               </button>
             </div>

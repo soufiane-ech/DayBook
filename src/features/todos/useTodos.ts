@@ -33,7 +33,7 @@ function parseTodos(raw: unknown): Todo[] {
 }
 
 export function useTodos() {
-  const [todos, setTodos] = useLocalStorage<Todo[]>('daybook.todos', [], parseTodos);
+  const [todos, setTodos, saveFailed] = useLocalStorage<Todo[]>('daybook.todos', [], parseTodos);
 
   const addTodo = useCallback(
     (draft: TodoDraft): Todo => {
@@ -79,7 +79,7 @@ export function useTodos() {
     [setTodos],
   );
 
-  return { todos, addTodo, updateTodo, toggleTodo, deleteTodo, clearCompleted, restoreTodos };
+  return { todos, saveFailed, addTodo, updateTodo, toggleTodo, deleteTodo, clearCompleted, restoreTodos };
 }
 
 export type Todos = ReturnType<typeof useTodos>;

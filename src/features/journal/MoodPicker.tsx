@@ -9,7 +9,7 @@ interface MoodPickerProps {
 
 export function MoodPicker({ selected, onToggle, compact = false }: MoodPickerProps) {
   return (
-    <div className={`grid gap-1.5 ${compact ? 'grid-cols-8' : 'grid-cols-4 lg:grid-cols-8'}`}>
+    <div className={`grid gap-1 ${compact ? 'grid-cols-8' : 'grid-cols-4 lg:grid-cols-8'}`}>
       {MOODS.map((mood) => {
         const isSelected = selected.includes(mood.id);
         return (
@@ -20,9 +20,9 @@ export function MoodPicker({ selected, onToggle, compact = false }: MoodPickerPr
             aria-pressed={isSelected}
             aria-label={mood.label}
             title={mood.label}
-            className={`flex flex-col items-center gap-0.5 rounded-xl border transition duration-200 hover:-translate-y-0.5 active:translate-y-0 ${
+            className={`flex flex-col items-center gap-1 rounded-lg border transition duration-200 hover:-translate-y-0.5 active:translate-y-0 ${
               compact ? 'py-1' : 'px-1 py-2'
-            } ${isSelected ? 'border-accent/50 bg-accent-soft' : 'hover:bg-line/40 border-transparent'}`}
+            } ${isSelected ? 'border-accent/50 bg-accent-soft' : 'hover:bg-line/50 border-transparent'}`}
           >
             <span
               aria-hidden

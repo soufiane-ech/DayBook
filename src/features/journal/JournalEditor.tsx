@@ -1,7 +1,9 @@
-import { Check, TriangleAlert } from 'lucide-react';
+import { Check, ChevronDown, Maximize2, Minimize2, Smile, TriangleAlert } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { EntryDateField } from './EntryDateField';
-import { EntryPanel, PRIMARY_ACTION_CLASS } from './EntryPanel';
+import { EntryPanel } from './EntryPanel';
 import { MoodPicker } from './MoodPicker';
+import { findMood } from './moods';
 import { TagInput } from './TagInput';
 import { isBlank, type JournalEntry, type JournalEntryChanges } from './useJournal';
 
@@ -20,8 +22,6 @@ function countWords(text: string): number {
   return trimmed === '' ? 0 : trimmed.split(/\s+/).length;
 }
 
-const SECTION_LABEL_CLASS = 'text-ink-soft mb-2 block text-sm';
-
 export function JournalEditor({
   entry,
   tagSuggestions,
@@ -31,12 +31,35 @@ export function JournalEditor({
   onDelete,
   onBack,
 }: JournalEditorProps) {
+  const [focusMode, setFocusMode] = useState(false);
+  const [moodOpen, setMoodOpen] = useState(false);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
+
   const words = countWords(entry.body);
+  const wordCount = `${words} ${words === 1 ? 'word' : 'words'}`;
+  const mood = findMood(entry.mood);
+
+  useEffect(() => {
+    if (!focusMode) return;
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setFocusMode(false);
+    }
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [focusMode]);
+
+  function toggleFocusMode() {
+    setFocusMode((value) => !value);
+    bodyRef.current?.focus();
+  }
+
+  const focusLabel = focusMode ? 'Exit focus mode' : 'Enter focus mode';
 
   return (
     <EntryPanel
       onBack={onBack}
       onDelete={onDelete}
+      focusMode={focusMode}
       status={
         saveFailed ? (
           <span role="alert" className="text-accent flex items-center gap-1 font-medium">
@@ -44,63 +67,95 @@ export function JournalEditor({
             Couldn't save
           </span>
         ) : (
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1 pl-1">
             <Check className="size-4 shrink-0" aria-hidden />
             Saved
+            {focusMode && <span className="pl-2 tabular-nums">{wordCount}</span>}
           </span>
         )
       }
+      tools={
+        <button type="button" onClick={toggleFocusMode} aria-label={focusLabel} title={focusLabel} className="icon-btn">
+          {focusMode ? <Minimize2 className="size-4" aria-hidden /> : <Maximize2 className="size-4" aria-hidden />}
+        </button>
+      }
       action={
-        <button type="button" onClick={onDone} className={PRIMARY_ACTION_CLASS}>
+        <button type="button" onClick={onDone} className="btn btn-primary">
           Done
         </button>
       }
     >
-      <div className="text-ink-soft flex items-center justify-between gap-3 text-sm">
-        <EntryDateField value={entry.date} onChange={(date) => onChange({ date })} />
-        <span className="shrink-0 tabular-nums">
-          {words} {words === 1 ? 'word' : 'words'}
-        </span>
-      </div>
-
       <input
         value={entry.title}
         onChange={(event) => onChange({ title: event.target.value })}
         placeholder="Give today a title"
         aria-label="Entry title"
         autoFocus={isBlank(entry)}
-        className="writing-field placeholder:text-ink-soft/60 mt-5 w-full bg-transparent font-serif text-2xl tracking-tight md:text-3xl"
+        className="writing-field placeholder:text-ink-soft/50 w-full bg-transparent font-serif text-3xl tracking-tight md:text-4xl"
       />
 
-      <div className="mt-5">
-        <span className={SECTION_LABEL_CLASS}>How are you feeling?</span>
-        <MoodPicker
-          selected={entry.mood ? [entry.mood] : []}
-          onToggle={(mood) => onChange({ mood: mood === entry.mood ? null : mood })}
-        />
-      </div>
+      {!focusMode && (
+        <>
+          <div className="text-ink-soft mt-4 flex flex-wrap items-center gap-2 text-sm">
+            <EntryDateField value={entry.date} onChange={(date) => onChange({ date })} />
+            <button
+              type="button"
+              onClick={() => setMoodOpen((open) => !open)}
+              aria-expanded={moodOpen}
+              className={`chip flex items-center gap-1.5 ${mood ? 'chip-on' : ''}`}
+            >
+              {mood ? (
+                <span aria-hidden className="leading-none">
+                  {mood.emoji}
+                </span>
+              ) : (
+                <Smile className="size-4" aria-hidden />
+              )}
+              {mood ? `Mood: ${mood.label}` : 'Add mood'}
+              <ChevronDown
+                className={`size-3.5 transition-transform duration-200 ${moodOpen ? 'rotate-180' : ''}`}
+                aria-hidden
+              />
+            </button>
+            <span className="ml-auto shrink-0 tabular-nums">{wordCount}</span>
+          </div>
+
+          {moodOpen && (
+            <div className="animate-item-in mt-3">
+              <MoodPicker
+                selected={entry.mood ? [entry.mood] : []}
+                onToggle={(selected) => {
+                  onChange({ mood: selected === entry.mood ? null : selected });
+                  setMoodOpen(false);
+                }}
+              />
+            </div>
+          )}
+        </>
+      )}
 
       <div
         data-value={entry.body}
-        className="autogrow border-line mt-5 min-h-64 border-t pt-5 font-serif text-[1.0625rem] leading-8"
+        className={`autogrow mt-6 font-serif leading-[1.85] ${
+          focusMode ? 'min-h-[60vh] text-xl' : 'min-h-[38vh] text-[1.0625rem]'
+        }`}
       >
         <textarea
+          ref={bodyRef}
           value={entry.body}
           onChange={(event) => onChange({ body: event.target.value })}
           placeholder="What's on your mind?"
           aria-label="Entry text"
-          className="writing-field placeholder:text-ink-soft/60 w-full bg-transparent"
+          className="writing-field placeholder:text-ink-soft/50 w-full bg-transparent"
         />
       </div>
 
-      <div className="mt-5">
-        <span className={SECTION_LABEL_CLASS}>Tags (optional)</span>
-        <TagInput
-          tags={entry.tags}
-          suggestions={tagSuggestions}
-          onChange={(tags) => onChange({ tags })}
-        />
-      </div>
+      {!focusMode && (
+        <div className="border-line mt-6 border-t pt-5">
+          <span className="section-label">Tags (optional)</span>
+          <TagInput tags={entry.tags} suggestions={tagSuggestions} onChange={(tags) => onChange({ tags })} />
+        </div>
+      )}
     </EntryPanel>
   );
 }

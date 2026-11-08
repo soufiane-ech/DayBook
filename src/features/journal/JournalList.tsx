@@ -29,13 +29,13 @@ interface JournalListProps {
 
 export function JournalList({ entries, selectedId, onSelect }: JournalListProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {groupByMonth(entries).map((group) => (
         <section key={group.month}>
-          <h2 className="text-ink-soft px-2.5 pb-1 text-xs font-medium">
+          <h2 className="text-ink-soft px-2.5 pb-1.5 text-xs font-semibold">
             {formatMonthAndYear(group.entries[0].date)}
           </h2>
-          <ul className="space-y-1">
+          <ul className="space-y-0.5">
             {group.entries.map((entry) => (
               <EntryRow
                 key={entry.id}
@@ -68,8 +68,8 @@ function EntryRow({ entry, isSelected, onSelect }: EntryRowProps) {
         type="button"
         onClick={onSelect}
         aria-current={isSelected ? 'true' : undefined}
-        className={`flex w-full gap-3 rounded-xl px-2.5 py-2.5 text-left transition-colors duration-200 ${
-          isSelected ? 'bg-accent-soft' : 'hover:bg-line/50'
+        className={`flex w-full gap-3 rounded-xl border px-2.5 py-2.5 text-left transition duration-200 ${
+          isSelected ? 'border-accent/40 bg-card shadow-soft' : 'hover:bg-line/40 border-transparent'
         }`}
       >
         <span className="w-9 shrink-0 text-center">
