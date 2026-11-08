@@ -24,7 +24,7 @@ src/
   components/   Shared UI (header, navigation, empty state)
   features/
     journal/    Entries, moods, tags, search and filters, reader, and editor
-    todos/      Todo state, form, filters, and list
+    todos/      Tasks, priorities, filters and sorting, composer, and list
   hooks/        Reusable hooks (hash routing, localStorage)
   lib/          Small helpers (dates, ids)
   App.tsx       App shell and section switching
